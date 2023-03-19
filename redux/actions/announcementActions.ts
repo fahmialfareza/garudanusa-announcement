@@ -1,9 +1,11 @@
 import { Dispatch } from "react";
 import { AnyAction } from "redux";
+import axios from "axios";
 import {
   IAnnouncementsResponse,
   ICheckResultResponse,
   IImportExcelResponse,
+  IUpdateAnnouncementRequest,
 } from "../../models/announcement";
 
 import {
@@ -12,6 +14,7 @@ import {
   setError,
   setAnnouncements,
   setIsSuccess,
+  setIsSuccessUpdate,
 } from "../reducers/announcement";
 
 class AnnouncementActions {
@@ -133,6 +136,39 @@ class AnnouncementActions {
         }
 
         dispatch(setAnnouncements(data.data));
+      } catch (error) {
+        dispatch(setError(error));
+        setTimeout(() => {
+          dispatch(setError(null));
+        }, 1000);
+        throw error;
+      }
+    };
+  }
+
+  static updateAnnouncement(announcement: IUpdateAnnouncementRequest) {
+    return async (dispatch: Dispatch<AnyAction>) => {
+      try {
+        const token = localStorage.getItem("token");
+        const data = JSON.stringify(announcement);
+
+        const config = {
+          method: "put",
+          url: `${process.env.NEXT_PUBLIC_API}/api/v1/announcement/update/${announcement.id}`,
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          data: data,
+        };
+
+        await axios.request(config);
+
+        dispatch(setIsSuccessUpdate(true));
+
+        setTimeout(() => {
+          dispatch(setIsSuccessUpdate(false));
+        }, 1000);
       } catch (error) {
         dispatch(setError(error));
         setTimeout(() => {

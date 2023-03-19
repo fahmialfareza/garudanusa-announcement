@@ -102,6 +102,7 @@ function Login() {
                       name="submit"
                       id="submit"
                       className="btn btn-danger"
+                      value="Masuk"
                     />
                   </p>
                 </div>

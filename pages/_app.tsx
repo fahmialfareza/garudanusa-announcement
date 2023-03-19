@@ -11,6 +11,7 @@ import NProgress from "nprogress";
 import store from "../redux";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import BackgroundImage from "../components/BackgroundImage";
 
 export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
@@ -38,6 +39,8 @@ export default function App({ Component, pageProps }: AppProps) {
           content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"
         />
       </Head>
+
+      <BackgroundImage />
 
       <Navbar />
 

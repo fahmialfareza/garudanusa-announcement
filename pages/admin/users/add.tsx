@@ -1,7 +1,9 @@
 import React, { FormEvent, useEffect, useState } from "react";
+import { GetServerSideProps } from "next";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
 import { toast, ToastContainer } from "react-toastify";
+import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 
 import AdminContainer from "../../../components/AdminContainer";
@@ -9,8 +11,13 @@ import { useAppDispatch } from "../../../redux";
 import authActions from "../../../redux/actions/authAction";
 import { selectAuth } from "../../../redux/reducers/auth";
 import Protected from "../../../components/Protected";
+import { IEvent, IEventResponse } from "../../../models/event";
 
-function AddUser() {
+interface AddUserProps {
+  event: IEvent | null;
+}
+
+function AddUser({ event }: AddUserProps) {
   const router = useRouter();
   const dispatch = useAppDispatch();
 
@@ -73,8 +80,10 @@ function AddUser() {
               <div className=" alert alert-dismissable alert-danger">
                 <h4 style={{ textAlign: "center" }}>
                   <b>
-                    SISTEM INFORMASI KELOLOSAN GARUDA NUSA YOUTH SUMMIT - TAMBAH
-                    PENGELOLA APLIKASI
+                    SISTEM INFORMASI KELOLOSAN{" "}
+                    {event?.event_name?.toUpperCase() ||
+                      "GARUDA NUSA YOUTH SUMMIT"}{" "}
+                    - TAMBAH PENGELOLA APLIKASI
                   </b>
                 </h4>
               </div>
@@ -169,5 +178,26 @@ function AddUser() {
     </Protected>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<AddUserProps> = async (
+  context
+) => {
+  try {
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API}/api/v1/event`);
+    const data = res.data as IEventResponse;
+
+    return {
+      props: {
+        event: data.data,
+      },
+    };
+  } catch (error) {
+    return {
+      props: {
+        event: null,
+      },
+    };
+  }
+};
 
 export default AddUser;

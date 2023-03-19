@@ -7,6 +7,18 @@ export interface ICheckResultRequest {
   phone: string;
 }
 
+export interface IUpdateAnnouncementRequest {
+  id: number;
+  name: string;
+  phone: string;
+  city_of_birth: string;
+  date_of_birth: string;
+  address_from: string;
+  school: string;
+  result: string;
+  total_score: number;
+}
+
 // Response
 export interface IImportExcelResponse {
   status: string;
@@ -34,6 +46,12 @@ export interface ICheckResultResponse {
 export interface IAnnouncementsResponse {
   status: string;
   data: IAnnouncementsResult;
+  message: string;
+}
+
+export interface IAnnouncementResponse {
+  status: string;
+  data: IAnnouncementResult;
   message: string;
 }
 

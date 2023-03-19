@@ -5,18 +5,20 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import { ToastContainer, toast } from "react-toastify";
 import axios from "axios";
+import parse from "html-react-parser";
 import "react-toastify/dist/ReactToastify.css";
 
 import { selectAnnouncement } from "../redux/reducers/announcement";
 import announcementActions from "../redux/actions/announcementActions";
 import { useAppDispatch } from "../redux";
-import { ICountdownResponse } from "../models/countdown";
+import { IEventResponse, IEvent } from "../models/event";
 
 interface FindResultProps {
   countdown: number;
+  event: IEvent;
 }
 
-function FindResult({ countdown }: FindResultProps) {
+function FindResult({ countdown, event }: FindResultProps) {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
@@ -124,8 +126,11 @@ function FindResult({ countdown }: FindResultProps) {
                         }}
                       >
                         <b>
-                          PENGUMUMAN SELEKSI BERKAS <br />
-                          GARUDA NUSA YOUTH SUMMIT
+                          PENGUMUMAN SELEKSI{" "}
+                          {event?.selection_phase?.toUpperCase() || "BERKAS"}{" "}
+                          <br />
+                          {event?.event_name?.toUpperCase() ||
+                            "GARUDA NUSA YOUTH SUMMIT"}
                         </b>
                       </h4>
                       <hr />
@@ -192,179 +197,267 @@ function FindResult({ countdown }: FindResultProps) {
   }
 
   return (
-    <div className="container" id="printablediv">
-      <br />
-      <div className="well" style={{ marginBottom: "50px" }}>
-        <p style={{ textAlign: "center" }}>
-          <Image
-            src="/images/logo.png"
-            alt="logo"
-            height={75}
-            width="150"
-            sizes="100vw"
-            style={{ width: "auto", height: "75" }}
-          />
-        </p>
-        <h4 style={{ margin: "15px 0 -10px 0;", textAlign: "center" }}>
-          <b>
-            PENGUMUMAN SELEKSI BERKAS <br />
-            GARUDA NUSA YOUTH SUMMIT
-          </b>
-        </h4>
-        <hr />
-        <div
-          style={{ textAlign: "center" }}
-          className="alert alert-dismissable alert-danger"
-        >
-          <h4>
-            <b> DETAIL STATUS KELOLOSAN </b>
-          </h4>
-        </div>
-        <table min-width="100" className="table table-striped table-bordered">
-          <tbody>
-            <tr className="success">
-              <td
-                colSpan={4}
-                align="center"
-                style={{ color: "#000", fontWeight: "bold" }}
-              >
-                <b>IDENTITAS PENDAFTAR GARUDA NUSA YOUTH SUMMIT</b>
-              </td>
-            </tr>
-            <tr>
-              <td>Nama Lengkap</td>
-              <td colSpan={3} style={{ textTransform: "capitalize" }}>
-                <strong>: {announcement.name}</strong>
-              </td>
-            </tr>
-
-            <tr className="secondary">
-              <td width="250">Nomor HP </td>
-              <td width="480">
-                <strong>: {announcement.phone}</strong>
-              </td>
-            </tr>
-
-            <tr>
-              <td>Asal Daerah</td>
-              <td colSpan={3}>
-                <strong>: {announcement.address_from}</strong>
-              </td>
-            </tr>
-
-            <tr className="secondary">
-              <td>Tempat/ Tgl. Lahir</td>
-              <td colSpan={3} style={{ textTransform: "uppercase" }}>
-                <strong>
-                  : {announcement.city_of_birth}, {announcement.date_of_birth}
-                </strong>
-              </td>
-            </tr>
-
-            <tr>
-              <td>Asal Kampus/Sekolah</td>
-              <td colSpan={3} style={{ textTransform: "capitalize" }}>
-                <strong>: {announcement.school}</strong>
-              </td>
-            </tr>
-
-            <tr className="success">
-              <td
-                colSpan={4}
-                align="center"
-                style={{ color: "#000", fontWeight: "bold" }}
-              >
-                STATUS KELOLOSAN SELEKSI BERKAS GARUDA NUSA YOUTH SUMMIT ANDA
-                DINYATAKAN
-              </td>
-            </tr>
-            <tr className="warning">
-              <td
-                colSpan={4}
-                align="center"
-                style={{ color: "#0066FF", textTransform: "uppercase" }}
-              >
-                {announcement.result}
-              </td>
-            </tr>
-            <tr className="success">
-              <td colSpan={4} align="center">
-                <b>
-                  Bagi yang LOLOS, silahkan mengikuti petunjuk pada Halaman 24
-                  poin 2 sebagaimana tercantum di s.id/PanduanGNYS.
-                </b>{" "}
-                Screenshoot bukti kelolosan ini sebagai BUKTI YANG VALID. Untuk
-                lanjut ke tahap seleksi substansi, segera lakukan pembayaran{" "}
-                <b>
-                  Commitment Fee + Donation sebesar Rp 99.000,- paling lambat
-                  pada 19 September 2022 pukul 12.00 WIB
-                </b>{" "}
-                ke rekening <b>BRI 0055-0100-2383-560</b> a.n Yayasan Garuda
-                Nusa Youth Development Center. Jika sudah,{" "}
-                <b>
-                  screenshoot bukti kelolosan ini lalu konfirmasi dan kirimkan
-                  bukti pembayaran Commitment Fee + Donation ke WA Admin Garda
-                  0858-1533-0595 dengan format LOLOSBERKAS_NAMA LENGKAP_ASAL
-                  KAMPUS/SEKOLAH_ASAL DAERAH.
-                </b>{" "}
-                <i>
-                  Bagi yang BELUM LOLOS, Garda masih membuka pendaftaran jalur
-                  early bird self funded (biaya mandiri) dan akan memfasilitasi
-                  pemberkasan dalam proses mencari dana sponsor ke
-                  kampus/pemkab/DPRD/perusahaan daerah. Garda juga akan
-                  mengumumkan 100 nama yang belum lolos jalur fully funded,
-                  untuk mendapatkan beasiswa berupa potongan biaya program
-                  (Partial Funded) yang bisa digunakan untuk mendaftar Garuda
-                  Nusa Youth Summit! Hubungi WA Garda 0858-1533-0595 untuk info
-                  lebih lanjut.
-                </i>
-              </td>
-            </tr>
-
-            <tr className="secondary">
-              <td colSpan={4}></td>
-            </tr>
-            <tr className="danger">
-              <td colSpan={4} align="center">
-                <b>Catatan:</b> Keputusan ini bersifat mutlak dan tidak dapat
-                diganggu gugat.{" "}
-                <b>
-                  Sebagian Commitment Fee + Donation akan disalurkan ke lokasi
-                  pengabdian di tapal batas Entikong untuk membantu
-                  memberdayakan masyarakat, mengembangkan pojok literasi dan
-                  aksi pendidikan, mendukung pelaksanakan program kerja Garuda
-                  Nusa Youth Summit, berbagai kegiatan sosial seperti santunan
-                  anak yatim serta beberapa program lain yang diselenggarakan
-                  oleh Garuda Nusa.
-                </b>{" "}
-                Terus ikuti media sosial resmi Garuda Nusa untuk mendapatkan
-                informasi program menarik berikutnya!{" "}
-                <i>
-                  Jangan lupa untuk follow instagram <b>@garudanusaid</b>
-                </i>
-                .
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <div className="form-group" style={{ marginBottom: "-10px" }}>
+    <div className="container">
+      <div id="printablediv">
+        <br />
+        <div className="well">
           <p style={{ textAlign: "center" }}>
-            <button
-              onClick={() => {
-                setIsResult(false);
-                dispatch(announcementActions.setAnnouncementNull());
-                setPhone("");
-              }}
-              className="btn btn-success"
-            >
-              KEMBALI
-            </button>{" "}
-            <button className="btn btn-danger" onClick={print}>
-              CETAK
-            </button>
+            <Image
+              src="/images/logo.png"
+              alt="logo"
+              height={75}
+              width="150"
+              sizes="100vw"
+              style={{ width: "auto", height: "75" }}
+            />
           </p>
+          <h4 style={{ margin: "15px 0 -10px 0;", textAlign: "center" }}>
+            <b>
+              PENGUMUMAN SELEKSI{" "}
+              {event?.selection_phase?.toUpperCase() || "BERKAS"} <br />
+              {event?.event_name?.toUpperCase() || "GARUDA NUSA YOUTH SUMMIT"}
+            </b>
+          </h4>
+          <hr />
+          <div
+            style={{ textAlign: "center" }}
+            className="alert alert-dismissable alert-danger"
+          >
+            <h4>
+              <b> DETAIL STATUS KELOLOSAN </b>
+            </h4>
+          </div>
+          <table min-width="100" className="table table-striped table-bordered">
+            <tbody>
+              <tr className="success">
+                <td
+                  colSpan={4}
+                  align="center"
+                  style={{ color: "#000", fontWeight: "bold" }}
+                >
+                  <b>
+                    IDENTITAS PENDAFTAR{" "}
+                    {event?.event_name?.toUpperCase() ||
+                      "GARUDA NUSA YOUTH SUMMIT"}
+                  </b>
+                </td>
+              </tr>
+              <tr>
+                <td>Nama Lengkap</td>
+                <td colSpan={3} style={{ textTransform: "capitalize" }}>
+                  <strong>: {announcement.name}</strong>
+                </td>
+              </tr>
+
+              <tr>
+                <td>Skor</td>
+                <td colSpan={3} style={{ textTransform: "capitalize" }}>
+                  <strong>: {announcement.total_score}</strong>
+                </td>
+              </tr>
+
+              <tr className="secondary">
+                <td width="250">Nomor HP </td>
+                <td width="480">
+                  <strong>: {announcement.phone}</strong>
+                </td>
+              </tr>
+
+              <tr>
+                <td>Asal Daerah</td>
+                <td colSpan={3}>
+                  <strong>: {announcement.address_from}</strong>
+                </td>
+              </tr>
+
+              <tr className="secondary">
+                <td>Tempat/ Tgl. Lahir</td>
+                <td colSpan={3} style={{ textTransform: "uppercase" }}>
+                  <strong>
+                    : {announcement.city_of_birth}, {announcement.date_of_birth}
+                  </strong>
+                </td>
+              </tr>
+
+              <tr>
+                <td>Asal Kampus/Sekolah</td>
+                <td colSpan={3} style={{ textTransform: "capitalize" }}>
+                  <strong>: {announcement.school}</strong>
+                </td>
+              </tr>
+
+              <tr className="success">
+                <td
+                  colSpan={4}
+                  align="center"
+                  style={{ color: "#000", fontWeight: "bold" }}
+                >
+                  STATUS KELOLOSAN SELEKSI{" "}
+                  {event?.selection_phase?.toUpperCase() || "BERKAS"}{" "}
+                  {event?.event_name?.toUpperCase() ||
+                    "GARUDA NUSA YOUTH SUMMIT"}{" "}
+                  ANDA DINYATAKAN
+                </td>
+              </tr>
+              {announcement?.result?.includes("TIDAK LOLOS") ? (
+                <>
+                  <tr className="warning">
+                    <td
+                      colSpan={4}
+                      align="center"
+                      style={{ color: "#FF6600", textTransform: "uppercase" }}
+                    >
+                      {announcement.result}
+                    </td>
+                  </tr>
+                  <tr className="danger">
+                    <td
+                      colSpan={4}
+                      align="center"
+                      style={{ textAlign: "justify" }}
+                    >
+                      {announcement.result?.includes("TIDAK LOLOS")
+                        ? parse(event?.result_did_not_pass_text)
+                        : announcement.result?.includes("LOLOS")
+                        ? parse(event?.result_pass_text)
+                        : parse(`<b>
+                            Bagi yang LOLOS, silahkan mengikuti petunjuk pada Halaman 24
+                            poin 2 sebagaimana tercantum di s.id/PanduanGNYS.
+                          </b>{" "}
+                          Screenshoot bukti kelolosan ini sebagai BUKTI YANG VALID.
+                          Untuk lanjut ke tahap seleksi substansi, segera lakukan
+                          pembayaran{" "}
+                          <b>
+                            Commitment Fee + Donation sebesar Rp 99.000,- paling lambat
+                            pada 19 September 2022 pukul 12.00 WIB
+                          </b>{" "}
+                          ke rekening <b>BRI 0055-0100-2383-560</b> a.n Yayasan Garuda
+                          Nusa Youth Development Center. Jika sudah,{" "}
+                          <b>
+                            screenshoot bukti kelolosan ini lalu konfirmasi dan kirimkan
+                            bukti pembayaran Commitment Fee + Donation ke WA Admin Garda
+                            0858-1533-0595 dengan format LOLOSBERKAS_NAMA LENGKAP_ASAL
+                            KAMPUS/SEKOLAH_ASAL DAERAH.
+                          </b>{" "}
+                          <i>
+                            Bagi yang BELUM LOLOS, Garda masih membuka pendaftaran jalur
+                            early bird self funded (biaya mandiri) dan akan
+                            memfasilitasi pemberkasan dalam proses mencari dana sponsor
+                            ke kampus/pemkab/DPRD/perusahaan daerah. Garda juga akan
+                            mengumumkan 100 nama yang belum lolos jalur fully funded,
+                            untuk mendapatkan beasiswa berupa potongan biaya program
+                            (Partial Funded) yang bisa digunakan untuk mendaftar Garuda
+                            Nusa Youth Summit! Hubungi WA Garda 0858-1533-0595 untuk
+                            info lebih lanjut.
+                          </i>`)}
+                    </td>
+                  </tr>
+                </>
+              ) : (
+                <>
+                  <tr className="warning">
+                    <td
+                      colSpan={4}
+                      align="center"
+                      style={{ color: "#0066FF", textTransform: "uppercase" }}
+                    >
+                      {announcement.result}
+                    </td>
+                  </tr>
+                  <tr className="success">
+                    <td
+                      colSpan={4}
+                      align="center"
+                      style={{ textAlign: "justify" }}
+                    >
+                      {announcement.result?.includes("TIDAK LOLOS")
+                        ? parse(event?.result_did_not_pass_text)
+                        : announcement.result?.includes("LOLOS")
+                        ? parse(event?.result_pass_text)
+                        : parse(`<b>
+                                  Bagi yang LOLOS, silahkan mengikuti petunjuk pada Halaman 24
+                                  poin 2 sebagaimana tercantum di s.id/PanduanGNYS.
+                                </b>{" "}
+                                Screenshoot bukti kelolosan ini sebagai BUKTI YANG VALID.
+                                Untuk lanjut ke tahap seleksi substansi, segera lakukan
+                                pembayaran{" "}
+                                <b>
+                                  Commitment Fee + Donation sebesar Rp 99.000,- paling lambat
+                                  pada 19 September 2022 pukul 12.00 WIB
+                                </b>{" "}
+                                ke rekening <b>BRI 0055-0100-2383-560</b> a.n Yayasan Garuda
+                                Nusa Youth Development Center. Jika sudah,{" "}
+                                <b>
+                                  screenshoot bukti kelolosan ini lalu konfirmasi dan kirimkan
+                                  bukti pembayaran Commitment Fee + Donation ke WA Admin Garda
+                                  0858-1533-0595 dengan format LOLOSBERKAS_NAMA LENGKAP_ASAL
+                                  KAMPUS/SEKOLAH_ASAL DAERAH.
+                                </b>{" "}
+                                <i>
+                                  Bagi yang BELUM LOLOS, Garda masih membuka pendaftaran jalur
+                                  early bird self funded (biaya mandiri) dan akan
+                                  memfasilitasi pemberkasan dalam proses mencari dana sponsor
+                                  ke kampus/pemkab/DPRD/perusahaan daerah. Garda juga akan
+                                  mengumumkan 100 nama yang belum lolos jalur fully funded,
+                                  untuk mendapatkan beasiswa berupa potongan biaya program
+                                  (Partial Funded) yang bisa digunakan untuk mendaftar Garuda
+                                  Nusa Youth Summit! Hubungi WA Garda 0858-1533-0595 untuk
+                                  info lebih lanjut.
+                                </i>`)}
+                    </td>
+                  </tr>
+                </>
+              )}
+
+              <tr className="secondary">
+                <td colSpan={4}></td>
+              </tr>
+              <tr className="danger">
+                <td colSpan={4} align="center" style={{ textAlign: "justify" }}>
+                  {event?.note
+                    ? parse(event?.note)
+                    : parse(`<b>Catatan:</b> Keputusan ini bersifat mutlak dan tidak dapat
+                  diganggu gugat.{" "}
+                  <b>
+                    Sebagian Commitment Fee + Donation akan disalurkan ke lokasi
+                    pengabdian di tapal batas Entikong untuk membantu
+                    memberdayakan masyarakat, mengembangkan pojok literasi dan
+                    aksi pendidikan, mendukung pelaksanakan program kerja Garuda
+                    Nusa Youth Summit, berbagai kegiatan sosial seperti santunan
+                    anak yatim serta beberapa program lain yang diselenggarakan
+                    oleh Garuda Nusa.
+                  </b>{" "}
+                  Terus ikuti media sosial resmi Garuda Nusa untuk mendapatkan
+                  informasi program menarik berikutnya!{" "}
+                  <i>
+                    Jangan lupa untuk follow instagram <b>@garudanusaid</b>
+                  </i>
+                  .`)}
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
+      <div className="form-group">
+        <p style={{ textAlign: "center" }}>
+          <button
+            onClick={() => {
+              setIsResult(false);
+              dispatch(announcementActions.setAnnouncementNull());
+              setPhone("");
+            }}
+            className="btn btn-success"
+          >
+            KEMBALI
+          </button>{" "}
+          <button className="btn btn-danger" onClick={print}>
+            CETAK
+          </button>
+        </p>
+      </div>
+      <br />
+      <br />
       <br />
     </div>
   );
@@ -374,10 +467,8 @@ export const getServerSideProps: GetServerSideProps<FindResultProps> = async (
   context
 ) => {
   try {
-    const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_API}/api/v1/countdown`
-    );
-    const data = res.data as ICountdownResponse;
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API}/api/v1/event`);
+    const data = res.data as IEventResponse;
 
     const announcementTime = new Date(data.data.date).getTime();
     const now = new Date().getTime();
@@ -394,6 +485,7 @@ export const getServerSideProps: GetServerSideProps<FindResultProps> = async (
     return {
       props: {
         countdown: announcementTime,
+        event: data.data,
       },
     };
   } catch (error) {

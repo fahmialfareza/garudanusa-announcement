@@ -4,6 +4,7 @@ import {
   IImportExcel,
 } from "../models/announcement";
 import { IUser } from "../models/auth";
+import { IEvent } from "../models/event";
 
 // Auth
 export interface AuthState {
@@ -20,9 +21,11 @@ export interface AnnouncementState {
   importExcel: IImportExcel | null;
   error: string | null;
   isSuccess: boolean;
+  isSuccessUpdate: boolean;
 }
 
-export interface CountdownState {
+export interface EventState {
   error: string | null;
   isSuccess: boolean;
+  event: IEvent | null;
 }

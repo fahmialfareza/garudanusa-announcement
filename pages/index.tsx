@@ -4,13 +4,14 @@ import Image from "next/image";
 import { GetServerSideProps } from "next";
 import axios from "axios";
 
-import { ICountdownResponse } from "../models/countdown";
+import { IEvent, IEventResponse } from "../models/event";
 
 interface HomeProps {
   countDownDate: number;
+  event: IEvent | null;
 }
 
-function Home({ countDownDate }: HomeProps) {
+function Home({ countDownDate, event }: HomeProps) {
   const [countdown, setCountdown] = useState<string>("");
   const [isCanFindData, setIsCanFindData] = useState<boolean>(false);
 
@@ -38,7 +39,7 @@ function Home({ countDownDate }: HomeProps) {
     const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
     // Output the result in an element with id="demo"
-    if (countDownDate !== 9664026979690) {
+    if (countDownDate) {
       setCountdown(
         days +
           " HARI : " +
@@ -108,8 +109,11 @@ function Home({ countDownDate }: HomeProps) {
                       style={{ margin: "15px 0 -10px 0", textAlign: "center" }}
                     >
                       <b>
-                        PENGUMUMAN SELEKSI BERKAS <br /> GARUDA NUSA YOUTH
-                        SUMMIT
+                        PENGUMUMAN SELEKSI{" "}
+                        {event?.selection_phase?.toUpperCase() || "BERKAS"}{" "}
+                        <br />{" "}
+                        {event?.event_name?.toUpperCase() ||
+                          "GARUDA NUSA YOUTH SUMMIT"}
                       </b>
                     </h4>
                     <hr />
@@ -172,20 +176,20 @@ export const getServerSideProps: GetServerSideProps<HomeProps> = async (
   context
 ) => {
   try {
-    const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_API}/api/v1/countdown`
-    );
-    const data = res.data as ICountdownResponse;
+    const res = await axios.get(`${process.env.NEXT_PUBLIC_API}/api/v1/event`);
+    const data = res.data as IEventResponse;
 
     return {
       props: {
         countDownDate: new Date(data.data.date).getTime(),
+        event: data.data,
       },
     };
   } catch (error) {
     return {
       props: {
         countDownDate: 9664026979690,
+        event: null,
       },
     };
   }

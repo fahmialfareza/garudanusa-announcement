@@ -9,6 +9,7 @@ const initialState: AnnouncementState = {
   importExcel: null,
   error: null,
   isSuccess: false,
+  isSuccessUpdate: false,
 };
 
 const announcementSlicer = createSlice({
@@ -30,6 +31,9 @@ const announcementSlicer = createSlice({
     setIsSuccess: (state, action) => {
       state.isSuccess = action.payload;
     },
+    setIsSuccessUpdate: (state, action) => {
+      state.isSuccessUpdate = action.payload;
+    },
   },
 });
 
@@ -39,6 +43,7 @@ export const {
   setError,
   setAnnouncements,
   setIsSuccess,
+  setIsSuccessUpdate,
 } = announcementSlicer.actions;
 
 export const selectAnnouncement = (state: RootState) => state.announcement;
