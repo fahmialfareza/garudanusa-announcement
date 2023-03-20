@@ -33,7 +33,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <Provider store={store}>
       <Head>
-        <title>PENGUMUMAN SELEKSI BERKAS &copy GARUDA NUSA YOUTH SUMMIT</title>
+        <title>PENGUMUMAN SELEKSI GARUDA NUSA</title>
         <meta
           name="viewport"
           content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no"

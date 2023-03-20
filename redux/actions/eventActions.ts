@@ -66,10 +66,10 @@ class EventActions {
         let data = res.data as IEventResponse;
 
         if (data?.data?.desktop_photo) {
-          data.data.desktop_photo = `${process.env.NEXT_PUBLIC_API}/${data.data.desktop_photo}`;
+          data.data.desktop_photo = `${process.env.NEXT_PUBLIC_API}${data.data.desktop_photo}`;
         }
         if (data?.data?.mobile_photo) {
-          data.data.mobile_photo = `${process.env.NEXT_PUBLIC_API}/${data.data.mobile_photo}`;
+          data.data.mobile_photo = `${process.env.NEXT_PUBLIC_API}${data.data.mobile_photo}`;
         }
 
         dispatch(setEvent(data.data));

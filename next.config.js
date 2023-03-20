@@ -8,7 +8,7 @@ const nextConfig = {
         protocol: "https",
         hostname: "api.garudanusa.id",
         port: "443",
-        pathname: "/**",
+        pathname: "/upload/images/**",
       },
       {
         protocol: "http",
