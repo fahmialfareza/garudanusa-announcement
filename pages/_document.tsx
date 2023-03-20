@@ -1,5 +1,4 @@
 /* eslint-disable @next/next/no-css-tags */
-// nextjs document
 import Document, { Html, Head, Main, NextScript } from "next/document";
 
 class MyDocument extends Document {
