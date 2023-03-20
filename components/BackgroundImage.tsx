@@ -13,9 +13,7 @@ function BackgroundImage() {
   const { width } = useWindowDimensions();
   const { event } = useSelector(selectEvent);
 
-  const [backgroundImage, setBackgroundImage] = useState<string>(
-    "/images/event-example.png"
-  );
+  const [backgroundImage, setBackgroundImage] = useState<string>("");
 
   useEffect(() => {
     dispatch(eventActions.getEvent());

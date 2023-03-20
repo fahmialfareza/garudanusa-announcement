@@ -6,7 +6,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "pengumuman-api.garudanusa.com",
+        hostname: "api.garudanusa.id",
         port: "443",
         pathname: "/**",
       },
