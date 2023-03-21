@@ -8,12 +8,14 @@ import "react-toastify/dist/ReactToastify.css";
 
 import authActions from "../redux/actions/authActions";
 import { selectAuth } from "../redux/reducers/auth";
+import { selectLoading } from "../redux/reducers/loading";
 
 function Login() {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
   const { error, token, user } = useSelector(selectAuth);
+  const { loading } = useSelector(selectLoading);
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -97,13 +99,15 @@ function Login() {
                 </div>
                 <div className="form-group" style={{ marginBottom: "-10px" }}>
                   <p style={{ textAlign: "center" }}>
-                    <input
+                    <button
                       type="submit"
                       name="submit"
                       id="submit"
                       className="btn btn-danger"
-                      value="Masuk"
-                    />
+                      disabled={loading}
+                    >
+                      {loading ? "MEMUAT..." : "MASUK"}
+                    </button>
                   </p>
                 </div>
               </fieldset>
