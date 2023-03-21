@@ -13,6 +13,7 @@ import { selectEvent } from "../../redux/reducers/event";
 import AdminContainer from "../../components/AdminContainer";
 import Protected from "../../components/Protected";
 import { IEventResponse, IEvent } from "../../models/event";
+import { selectLoading } from "../../redux/reducers/loading";
 
 interface ProfileProps {
   countDownDateString: string | null;
@@ -24,6 +25,7 @@ function Profile({ countDownDateString, event }: ProfileProps) {
   const router = useRouter();
 
   const { isSuccess, error } = useSelector(selectEvent);
+  const { loading } = useSelector(selectLoading);
 
   const [date, setDate] = useState("");
   const [eventName, setEventName] = useState("");
@@ -334,8 +336,9 @@ function Profile({ countDownDateString, event }: ProfileProps) {
                           name="submit"
                           className="btn btn-info"
                           aria-disabled={"true"}
+                          disabled={loading}
                         >
-                          UPDATE
+                          {loading ? "MENGIRIM DATA..." : "UPDATE"}
                         </button>
                       </p>
                     </div>

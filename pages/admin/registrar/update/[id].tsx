@@ -17,6 +17,7 @@ import {
 } from "../../../../models/announcement";
 import announcementActions from "../../../../redux/actions/announcementActions";
 import { selectAnnouncement } from "../../../../redux/reducers/announcement";
+import { selectLoading } from "../../../../redux/reducers/loading";
 
 interface UpdateRegistrarProps {
   event: IEvent | null;
@@ -28,6 +29,7 @@ function UpdateRegistrar({ event, announcement }: UpdateRegistrarProps) {
   const dispatch = useAppDispatch();
 
   const { isSuccessUpdate, error } = useSelector(selectAnnouncement);
+  const { loading } = useSelector(selectLoading);
 
   const { id } = router.query;
 
@@ -241,13 +243,14 @@ function UpdateRegistrar({ event, announcement }: UpdateRegistrarProps) {
                 <br />
                 <div className="form-group">
                   <p style={{ textAlign: "right" }}>
-                    <input
+                    <button
                       type="submit"
-                      name="submit"
                       id="submit"
-                      value="SIMPAN"
                       className="btn btn-danger"
-                    />
+                      disabled={loading}
+                    >
+                      {loading ? "MENGIRIM DATA..." : "SIMPAN"}
+                    </button>
                   </p>
                 </div>
               </form>

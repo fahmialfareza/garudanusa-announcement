@@ -1,15 +1,19 @@
 import { Dispatch } from "react";
 import { AnyAction } from "redux";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import FormData from "form-data";
 
 import { IEventRequest, IEventResponse } from "../../models/event";
 import { setError, setIsSuccess, setEvent } from "../reducers/event";
+import { ErrorResponse } from "../../models/error";
+import { setLoading } from "../reducers/loading";
 
 class EventActions {
   static setEvent(event: IEventRequest) {
     return async (dispatch: Dispatch<AnyAction>) => {
       try {
+        dispatch(setLoading(true));
+
         const token = localStorage.getItem("token");
         const requestData = new FormData();
 
@@ -44,11 +48,15 @@ class EventActions {
         await axios.request(config);
 
         dispatch(setIsSuccess(true));
+        dispatch(setLoading(false));
         setTimeout(() => {
           dispatch(setIsSuccess(false));
         }, 1000);
       } catch (error) {
-        dispatch(setError(error));
+        const err = error as AxiosError<ErrorResponse>;
+
+        dispatch(setLoading(false));
+        dispatch(setError(err.response?.data?.message));
         setTimeout(() => {
           dispatch(setError(null));
         }, 1000);
@@ -60,6 +68,8 @@ class EventActions {
   static getEvent() {
     return async (dispatch: Dispatch<AnyAction>) => {
       try {
+        dispatch(setLoading(true));
+
         const res = await axios.get(
           `${process.env.NEXT_PUBLIC_API}/api/v1/event`
         );
@@ -73,8 +83,12 @@ class EventActions {
         }
 
         dispatch(setEvent(data.data));
+        dispatch(setLoading(false));
       } catch (error) {
-        dispatch(setError(error));
+        const err = error as AxiosError<ErrorResponse>;
+
+        dispatch(setLoading(false));
+        dispatch(setError(err.response?.data?.message));
         setTimeout(() => {
           dispatch(setError(null));
         }, 1000);

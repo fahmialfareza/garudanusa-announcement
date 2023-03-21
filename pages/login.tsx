@@ -6,7 +6,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { useAppDispatch } from "../redux";
 import "react-toastify/dist/ReactToastify.css";
 
-import authActions from "../redux/actions/authAction";
+import authActions from "../redux/actions/authActions";
 import { selectAuth } from "../redux/reducers/auth";
 
 function Login() {

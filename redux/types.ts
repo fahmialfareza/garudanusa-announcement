@@ -29,3 +29,7 @@ export interface EventState {
   isSuccess: boolean;
   event: IEvent | null;
 }
+
+export interface LoadingState {
+  loading: boolean;
+}

@@ -13,6 +13,7 @@ import announcementActions from "../../../redux/actions/announcementActions";
 import { selectAnnouncement } from "../../../redux/reducers/announcement";
 import Protected from "../../../components/Protected";
 import { IEvent, IEventResponse } from "../../../models/event";
+import { selectLoading } from "../../../redux/reducers/loading";
 
 interface RegistrarProps {
   event: IEvent | null;
@@ -23,6 +24,7 @@ function Registrar({ event }: RegistrarProps) {
   const router = useRouter();
 
   const { announcements, error, isSuccess } = useSelector(selectAnnouncement);
+  const { loading } = useSelector(selectLoading);
 
   useEffect(() => {
     dispatch(announcementActions.getAllAnnouncements());
@@ -179,13 +181,14 @@ function Registrar({ event }: RegistrarProps) {
                       // eslint-disable-next-line no-restricted-globals
                       confirm("Yakin ingin menghapus semua data?")
                     ) {
-                      dispatch(announcementActions.deleteAllAnnuncements());
+                      if (!loading)
+                        dispatch(announcementActions.deleteAllAnnuncements());
                     }
                   }}
                   href={""}
                   className="page-link"
                 >
-                  HAPUS SEMUA PENDAFTAR
+                  {loading ? "MEMUAT..." : "HAPUS SEMUA PENDAFTAR"}
                 </Link>
               </li>
             </ul>

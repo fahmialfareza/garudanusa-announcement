@@ -6,14 +6,16 @@ import "react-toastify/dist/ReactToastify.css";
 
 import AdminContainer from "../../../components/AdminContainer";
 import { useAppDispatch } from "../../../redux";
-import authActions from "../../../redux/actions/authAction";
+import authActions from "../../../redux/actions/authActions";
 import { selectAuth } from "../../../redux/reducers/auth";
 import Protected from "../../../components/Protected";
+import { selectLoading } from "../../../redux/reducers/loading";
 
 function Users() {
   const dispatch = useAppDispatch();
 
   const { users, error, isSuccess } = useSelector(selectAuth);
+  const { loading } = useSelector(selectLoading);
 
   useEffect(() => {
     dispatch(authActions.getAllUsers());
@@ -72,15 +74,16 @@ function Users() {
                               // eslint-disable-next-line no-restricted-globals
                               confirm("Yakin ingin menghapus pengguna ini?")
                             ) {
-                              dispatch(authActions.deleteUser(user.id));
+                              if (!loading)
+                                dispatch(authActions.deleteUser(user.id));
                             }
                           }}
                         >
                           <button
                             className="btn btn-danger btn-sm"
-                            title="Hapus"
+                            disabled={loading}
                           >
-                            HAPUS
+                            {loading ? "MEMUAT..." : "HAPUS"}
                           </button>
                         </Link>
                       </td>

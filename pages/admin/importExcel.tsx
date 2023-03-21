@@ -10,12 +10,14 @@ import { useAppDispatch } from "../../redux";
 import announcementActions from "../../redux/actions/announcementActions";
 import { selectAnnouncement } from "../../redux/reducers/announcement";
 import Protected from "../../components/Protected";
+import { selectLoading } from "../../redux/reducers/loading";
 
 function ImportExcel() {
   const dispatch = useAppDispatch();
   const router = useRouter();
 
   const { importExcel, error } = useSelector(selectAnnouncement);
+  const { loading } = useSelector(selectLoading);
 
   const [announcement, setAnnoncement] = useState<File>();
 
@@ -66,6 +68,7 @@ function ImportExcel() {
                 type="file"
                 className="btn btn-danger"
                 accept="application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                required
                 onChange={(e) => {
                   if (e.target.files && e.target.files.length > 0) {
                     setAnnoncement(e.target.files[0]);
@@ -73,7 +76,9 @@ function ImportExcel() {
                 }}
               />
               <br />
-              <input name="submit" type="submit" className="btn btn-info" />
+              <button type="submit" className="btn btn-info" disabled={loading}>
+                {loading ? "MENGIRIM DATA..." : "SUBMIT"}
+              </button>
               <br />
               <br />*{" "}
               <b>Silahkan hapus header pada template yang berwana kuning.</b>

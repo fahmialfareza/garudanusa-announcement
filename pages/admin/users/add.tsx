@@ -8,10 +8,11 @@ import "react-toastify/dist/ReactToastify.css";
 
 import AdminContainer from "../../../components/AdminContainer";
 import { useAppDispatch } from "../../../redux";
-import authActions from "../../../redux/actions/authAction";
+import authActions from "../../../redux/actions/authActions";
 import { selectAuth } from "../../../redux/reducers/auth";
 import Protected from "../../../components/Protected";
 import { IEvent, IEventResponse } from "../../../models/event";
+import { selectLoading } from "../../../redux/reducers/loading";
 
 interface AddUserProps {
   event: IEvent | null;
@@ -22,6 +23,7 @@ function AddUser({ event }: AddUserProps) {
   const dispatch = useAppDispatch();
 
   const { error, isSuccess } = useSelector(selectAuth);
+  const { loading } = useSelector(selectLoading);
 
   const [name, setName] = useState("");
   const [username, setUsername] = useState("");
@@ -160,13 +162,14 @@ function AddUser({ event }: AddUserProps) {
                 <br />
                 <div className="form-group">
                   <p style={{ textAlign: "right" }}>
-                    <input
+                    <button
                       type="submit"
-                      name="submit"
                       id="submit"
-                      value="SIMPAN"
                       className="btn btn-danger"
-                    />
+                      disabled={loading}
+                    >
+                      {loading ? "MENGIRIM DATA..." : "SIMPAN"}
+                    </button>
                   </p>
                 </div>
               </form>

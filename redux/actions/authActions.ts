@@ -1,39 +1,78 @@
+import { AxiosError, AxiosRequestConfig } from "axios";
 import { Dispatch } from "react";
 import { AnyAction } from "redux";
-import axios, { AxiosError, AxiosRequestConfig } from "axios";
-import {
-  IAnnouncementsResponse,
-  ICheckResultResponse,
-  IImportExcelResponse,
-  IUpdateAnnouncementRequest,
-} from "../../models/announcement";
+import axios from "axios";
 
 import {
-  setAnnouncement,
-  setImportExcel,
+  IAllUsersResponse,
+  ILoginRequest,
+  IMeResponse,
+  IRegisterLoginResponse,
+  IRegisterRequest,
+} from "../../models/auth";
+import {
   setError,
-  setAnnouncements,
+  setToken,
+  setUser,
+  setUsers,
   setIsSuccess,
-  setIsSuccessUpdate,
-} from "../reducers/announcement";
-import { setLoading } from "../reducers/loading";
+} from "../reducers/auth";
 import { ErrorResponse } from "../../models/error";
+import { setLoading } from "../reducers/loading";
 
-class AnnouncementActions {
-  static getAnnouncement(phone: string) {
+class AuthActions {
+  static register(requestData: IRegisterRequest) {
     return async (dispatch: Dispatch<AnyAction>) => {
       try {
         dispatch(setLoading(true));
 
         const config: AxiosRequestConfig = {
-          method: "get",
-          url: `${process.env.NEXT_PUBLIC_API}/api/v1/announcement/phone/${phone}`,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          url: `${process.env.NEXT_PUBLIC_API}/api/v1/auth/register`,
+          method: "post",
+          data: requestData,
+        };
+
+        await axios.request(config);
+
+        dispatch(setIsSuccess(true));
+        dispatch(setLoading(false));
+        setTimeout(() => {
+          dispatch(setIsSuccess(false));
+        }, 1000);
+      } catch (error) {
+        const err = error as AxiosError<ErrorResponse>;
+
+        dispatch(setLoading(false));
+        dispatch(setError(err.response?.data?.message));
+        setTimeout(() => {
+          dispatch(setError(null));
+        }, 1000);
+        throw error;
+      }
+    };
+  }
+
+  static login(requestData: ILoginRequest) {
+    return async (dispatch: Dispatch<AnyAction>) => {
+      try {
+        dispatch(setLoading(true));
+
+        const config: AxiosRequestConfig = {
+          url: `${process.env.NEXT_PUBLIC_API}/api/v1/auth/login`,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          method: "post",
+          data: requestData,
         };
 
         const response = await axios.request(config);
-        const data = response.data as ICheckResultResponse;
+        const data = response.data as IRegisterLoginResponse;
 
-        dispatch(setAnnouncement(data.data));
+        dispatch(setToken(data.data.token));
         dispatch(setLoading(false));
       } catch (error) {
         const err = error as AxiosError<ErrorResponse>;
@@ -48,20 +87,7 @@ class AnnouncementActions {
     };
   }
 
-  static setAnnouncementNull() {
-    return (dispatch: Dispatch<AnyAction>) => {
-      try {
-        dispatch(setLoading(true));
-        dispatch(setAnnouncement(null));
-        dispatch(setLoading(false));
-      } catch (error) {
-        dispatch(setLoading(false));
-        throw error;
-      }
-    };
-  }
-
-  static importExcel(announcement: File) {
+  static me() {
     return async (dispatch: Dispatch<AnyAction>) => {
       try {
         dispatch(setLoading(true));
@@ -72,69 +98,22 @@ class AnnouncementActions {
           return;
         }
 
-        const formdata = new FormData();
-        formdata.append("announcement", announcement);
-
-        const config: AxiosRequestConfig = {
-          url: `${process.env.NEXT_PUBLIC_API}/api/v1/announcement/import`,
-          method: "post",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-          data: formdata,
-        };
-
-        const response = await axios.request(config);
-        const data = response.data as IImportExcelResponse;
-
-        dispatch(setImportExcel(data.data));
-        setTimeout(() => {
-          dispatch(setImportExcel(null));
-        }, 1000);
-        dispatch(setLoading(false));
-      } catch (error) {
-        const err = error as AxiosError<ErrorResponse>;
-
-        dispatch(setLoading(false));
-        dispatch(setError(err.response?.data?.message));
-        setTimeout(() => {
-          dispatch(setError(null));
-        }, 1000);
-        throw error;
-      }
-    };
-  }
-
-  static getAllAnnouncements(page?: number) {
-    return async (dispatch: Dispatch<AnyAction>) => {
-      try {
-        dispatch(setLoading(true));
-
-        const token = localStorage.getItem("token");
-
         const config: AxiosRequestConfig = {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-          url: page
-            ? `${process.env.NEXT_PUBLIC_API}/api/v1/announcement?page=${page}`
-            : `${process.env.NEXT_PUBLIC_API}/api/v1/announcement`,
+          url: `${process.env.NEXT_PUBLIC_API}/api/v1/auth/me`,
           method: "get",
         };
 
-        if (!page) {
-          page = 1;
-        }
-
         const response = await axios.request(config);
-        const data = response.data as IAnnouncementsResponse;
+        const data = response.data as IMeResponse;
 
-        dispatch(setAnnouncements(data.data));
+        dispatch(setUser(data.data));
         dispatch(setLoading(false));
       } catch (error) {
         const err = error as AxiosError<ErrorResponse>;
 
-        dispatch(setLoading(false));
         dispatch(setError(err.response?.data?.message));
         setTimeout(() => {
           dispatch(setError(null));
@@ -144,31 +123,43 @@ class AnnouncementActions {
     };
   }
 
-  static updateAnnouncement(announcement: IUpdateAnnouncementRequest) {
+  static logout() {
+    return (dispatch: Dispatch<AnyAction>) => {
+      dispatch(setLoading(true));
+      dispatch(setToken(null));
+      dispatch(setUser(null));
+      dispatch(setLoading(false));
+    };
+  }
+
+  static getAllUsers() {
     return async (dispatch: Dispatch<AnyAction>) => {
       try {
         dispatch(setLoading(true));
 
         const token = localStorage.getItem("token");
-        const data = JSON.stringify(announcement);
 
-        const config = {
-          method: "put",
-          url: `${process.env.NEXT_PUBLIC_API}/api/v1/announcement/update/${announcement.id}`,
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          data: data,
+        const myHeaders = new Headers();
+        myHeaders.append("Authorization", `Bearer ${token}`);
+
+        const requestOptions = {
+          method: "GET",
+          headers: myHeaders,
         };
 
-        await axios.request(config);
+        const config: AxiosRequestConfig = {
+          method: "get",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          url: `${process.env.NEXT_PUBLIC_API}/api/v1/auth/users`,
+        };
 
-        dispatch(setIsSuccessUpdate(true));
+        const response = await axios.request(config);
+        const data = response.data as IAllUsersResponse;
+
+        dispatch(setUsers(data.data));
         dispatch(setLoading(false));
-        setTimeout(() => {
-          dispatch(setIsSuccessUpdate(false));
-        }, 1000);
       } catch (error) {
         const err = error as AxiosError<ErrorResponse>;
 
@@ -182,7 +173,7 @@ class AnnouncementActions {
     };
   }
 
-  static deleteAllAnnuncements() {
+  static deleteUser(id: number) {
     return async (dispatch: Dispatch<AnyAction>) => {
       try {
         dispatch(setLoading(true));
@@ -190,18 +181,15 @@ class AnnouncementActions {
         const token = localStorage.getItem("token");
 
         const config: AxiosRequestConfig = {
+          method: "delete",
           headers: {
             Authorization: `Bearer ${token}`,
           },
-          method: "delete",
-          url: `${process.env.NEXT_PUBLIC_API}/api/v1/announcement/delete`,
+          url: `${process.env.NEXT_PUBLIC_API}/api/v1/auth/delete/${id}`,
         };
 
-        await axios.request(config);
+        const response = await axios.request(config);
 
-        dispatch(setAnnouncements(null));
-        dispatch(setAnnouncement(null));
-        dispatch(setImportExcel(null));
         dispatch(setIsSuccess(true));
         dispatch(setLoading(false));
         setTimeout(() => {
@@ -221,4 +209,4 @@ class AnnouncementActions {
   }
 }
 
-export default AnnouncementActions;
+export default AuthActions;

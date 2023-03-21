@@ -12,6 +12,7 @@ import { selectAnnouncement } from "../redux/reducers/announcement";
 import announcementActions from "../redux/actions/announcementActions";
 import { useAppDispatch } from "../redux";
 import { IEventResponse, IEvent } from "../models/event";
+import { selectLoading } from "../redux/reducers/loading";
 
 interface FindResultProps {
   countdown: number;
@@ -23,6 +24,7 @@ function FindResult({ countdown, event }: FindResultProps) {
   const router = useRouter();
 
   const { announcement, error } = useSelector(selectAnnouncement);
+  const { loading } = useSelector(selectLoading);
 
   const [isResult, setIsResult] = useState(false);
   const [phone, setPhone] = useState("");
@@ -178,7 +180,12 @@ function FindResult({ countdown, event }: FindResultProps) {
                                   name="SUBMIT"
                                   id="SUBMIT"
                                   className="btn btn-danger"
-                                  value="CEK STATUS KELOLOSAN"
+                                  value={
+                                    loading
+                                      ? "MEMUAT..."
+                                      : "CEK STATUS KELOLOSAN"
+                                  }
+                                  disabled={loading}
                                 />
                               </p>
                             </div>

@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 
 import { useAppDispatch } from "../redux";
 import { selectAuth } from "../redux/reducers/auth";
-import authActions from "../redux/actions/authAction";
+import authActions from "../redux/actions/authActions";
 import eventActions from "../redux/actions/eventActions";
 import { selectEvent } from "../redux/reducers/event";
 
