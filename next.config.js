@@ -17,6 +17,7 @@ const nextConfig = {
       },
     ],
   },
+  domains: ["api.garudanusa.id"],
 };
 
 module.exports = nextConfig;

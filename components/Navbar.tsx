@@ -52,7 +52,6 @@ function Navbar() {
           </Link>
           <button
             className="navbar-toggle"
-            type="button"
             data-toggle="collapse"
             data-target="#navbar-main"
           >

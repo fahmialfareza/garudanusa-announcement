@@ -80,7 +80,7 @@ function Profile({ countDownDateString, event }: ProfileProps) {
 
   useEffect(() => {
     if (isSuccess) {
-      toast.success("Berhasil megedit data event!");
+      toast.success("Berhasil mengedit data event!");
     }
   }, [isSuccess]);
 
