@@ -22,7 +22,12 @@ const authSlicer = createSlice({
       state.user = action.payload;
     },
     setToken: (state, action) => {
-      localStorage.setItem("token", action.payload);
+      if (action?.payload) {
+        localStorage.setItem("token", action.payload);
+      } else {
+        localStorage.removeItem("token");
+      }
+
       state.token = action.payload;
     },
     setError: (state, action) => {
