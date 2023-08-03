@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  domains: ["api.garudanusa.id"],
   reactStrictMode: true,
   swcMinify: true,
   images: {
@@ -12,12 +13,11 @@ const nextConfig = {
       {
         protocol: "http",
         hostname: "localhost",
-        port: "7000",
+        port: "8000",
         pathname: "/**",
       },
     ],
   },
-  domains: ["api.garudanusa.id"],
 };
 
 module.exports = nextConfig;
